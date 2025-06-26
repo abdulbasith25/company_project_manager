@@ -250,7 +250,7 @@
         <!-- /.row -->
 
         <!-- All Users Section -->
-        <div id="all-users-section" class="card card-dark card-outline"> <!-- ADDED ID HERE -->
+        <div id="all-users-section" class="card card-dark card-outline "> <!-- ADDED ID HERE -->
             <div class="card-header">
                 <h3 class="card-title">All Users</h3>
             </div>

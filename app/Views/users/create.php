@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Admin Dashboard</title>
+  <title>AdminLTE 3 | Add New User</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -14,7 +14,6 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/css/adminlte.min.css">
   <style>
-    /* Custom styles to override or enhance AdminLTE */
     .brand-link .brand-image {
         float: left;
         line-height: .8;
@@ -23,9 +22,6 @@
         margin-top: -.3rem;
         max-height: 33px;
         width: auto;
-    }
-    .card-footer {
-        background-color: transparent; /* Ensure footer background is transparent */
     }
   </style>
 </head>
@@ -42,9 +38,12 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="<?= base_url('admin/dashboard') ?>" class="nav-link">Home</a>
       </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="<?= base_url('users/create') ?>" class="nav-link">Add User</a>
+      </li>
     </ul>
 
-    <!-- Right navbar links (optional, for user dropdown/logout) -->
+    <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -68,7 +67,7 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
+      <!-- Sidebar user panel -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
           <img src="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
@@ -82,7 +81,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="<?= base_url('admin/dashboard') ?>" class="nav-link active">
+            <a href="<?= base_url('admin/dashboard') ?>" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>Dashboard</p>
             </a>
@@ -108,7 +107,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?= base_url('users/create') ?>" class="nav-link">
+            <a href="<?= base_url('users/create') ?>" class="nav-link active">
               <i class="nav-icon fas fa-user-plus"></i>
               <p>Add New User</p>
             </a>
@@ -133,12 +132,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Admin Dashboard</h1>
+            <h1 class="m-0">Add New User</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item"><a href="<?= base_url('users') ?>">Users</a></li>
+              <li class="breadcrumb-item active">Add</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -182,55 +182,65 @@
             </div>
         <?php endif; ?>
 
-        <!-- Small Boxes / Info Boxes for Summary (Remains) -->
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3><?= esc($totalProjects) ?></h3>
-                <p>Total Projects</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-briefcase"></i>
-              </div>
-              <a href="<?= base_url('projects') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3><?= esc($totalEmployees) ?></h3>
-                <p>Total Employees</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-stalker"></i>
-              </div>
-              <a href="<?= base_url('users') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-        </div>
-        <!-- /.row -->
-
-        <!-- NEW: Latest Project Card -->
-        <div class="card card-outline card-primary">
+        <!-- Add New User Form (Moved from admin dashboard) -->
+        <div class="card card-primary card-outline">
             <div class="card-header">
-                <h3 class="card-title">Latest Project</h3>
+                <h3 class="card-title">User Details</h3>
             </div>
-            <div class="card-body">
-                <?php if ($latestProject): ?>
-                    <h4><?= esc($latestProject['title']) ?></h4>
-                    <p class="text-muted">Created: <?= date('M d, Y H:i', strtotime($latestProject['created_at'])) ?></p>
-                    <p><?= esc($latestProject['description'] ?? 'No description provided.') ?></p>
-                    <a href="<?= base_url('projects') ?>" class="btn btn-sm btn-info float-right">View All Projects <i class="fas fa-arrow-circle-right"></i></a>
-                <?php else: ?>
-                    <p class="text-muted">No projects created yet. <a href="<?= base_url('projects/create') ?>">Create your first project!</a></p>
-                <?php endif; ?>
-            </div>
+            <form action="<?= base_url('users/store') ?>" method="post">
+                <?= csrf_field() ?>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="name">Full Name:</label>
+                        <input type="text" class="form-control <?= (session('errors.name')) ? 'is-invalid' : '' ?>"
+                               id="name" name="name" value="<?= old('name') ?>" placeholder="Enter full name" required>
+                        <?php if (session('errors.name')): ?><div class="invalid-feedback"><?= session('errors.name') ?></div><?php endif; ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" class="form-control <?= (session('errors.email')) ? 'is-invalid' : '' ?>"
+                               id="email" name="email" value="<?= old('email') ?>" placeholder="Enter email" required>
+                        <?php if (session('errors.email')): ?><div class="invalid-feedback"><?= session('errors.email') ?></div><?php endif; ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone (Optional):</label>
+                        <input type="text" class="form-control <?= (session('errors.phone')) ? 'is-invalid' : '' ?>"
+                               id="phone" name="phone" value="<?= old('phone') ?>" placeholder="Enter phone number">
+                        <?php if (session('errors.phone')): ?><div class="invalid-feedback"><?= session('errors.phone') ?></div><?php endif; ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control <?= (session('errors.password')) ? 'is-invalid' : '' ?>"
+                               id="password" name="password" placeholder="Enter password" required>
+                        <?php if (session('errors.password')): ?><div class="invalid-feedback"><?= session('errors.password') ?></div><?php endif; ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="role_id">Role:</label>
+                        <select class="form-control <?= (session('errors.role_id')) ? 'is-invalid' : '' ?>" id="role_id" name="role_id" required>
+                          <option value="">Select Role</option>
+                          <?php foreach ($roles as $role): ?>
+                            <option value="<?= esc($role['id']) ?>" <?= (old('role_id') == $role['id']) ? 'selected' : '' ?>>
+                              <?= esc($role['title']) ?>
+                            </option>
+                          <?php endforeach; ?>
+                        </select>
+                        <?php if (session('errors.role_id')): ?><div class="invalid-feedback"><?= session('errors.role_id') ?></div><?php endif; ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select class="form-control <?= (session('errors.status')) ? 'is-invalid' : '' ?>" id="status" name="status" required>
+                          <option value="">Select Status</option>
+                          <option value="1" <?= (old('status') === '1') ? 'selected' : '' ?>>Active</option>
+                          <option value="0" <?= (old('status') === '0') ? 'selected' : '' ?>>Inactive</option>
+                        </select>
+                        <?php if (session('errors.status')): ?><div class="invalid-feedback"><?= session('errors.status') ?></div><?php endif; ?>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                </div>
+            </form>
         </div>
-        <!-- /.Latest Project Card -->
 
       </div><!-- /.container-fluid -->
     </section>
@@ -255,7 +265,6 @@
 </div>
 <!-- ./wrapper -->
 
-
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -263,10 +272,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1.0/dist/js/adminlte.min.js"></script>
-
-<script>
-    // No specific JS needed for this update, as logic is handled by PHP.
-    // Flash message handling remains as is.
-</script>
 </body>
 </html>
