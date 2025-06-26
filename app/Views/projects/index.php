@@ -419,10 +419,7 @@
                 $('#add_user_role_id').val('<?= old('role_id') ?>');
                 $('#add_user_status').val('<?= old('status') ?>');
             }
-        <?php elseif (session()->getFlashdata('success') && $this->request->uri->getSegment(2) === 'projects'): ?>
-            showSection('all-projects-section');
-        <?php elseif (session()->getFlashdata('success') && $this->request->uri->getSegment(2) === 'users'): ?>
-            showSection('all-projects-section'); // Keep default view, or you could redirect to a user list if you had one.
+        // Keep default view, or you could redirect to a user list if you had one.
         <?php else: ?>
             showSection('all-projects-section');
         <?php endif; ?>

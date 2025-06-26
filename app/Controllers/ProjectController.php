@@ -80,7 +80,8 @@ class ProjectController extends Controller
     {
         $data = [
             'validation' => service('validation'),
-            'userName' => session()->get('userName') // Pass for sidebar/navbar
+            'userName' => session()->get('userName'), // Pass for sidebar/navbar
+            
         ];
         return view('projects/create', $data);
     }
@@ -109,6 +110,7 @@ class ProjectController extends Controller
         $data = [
             'title'       => $this->request->getPost('title'),
             'description' => $this->request->getPost('description'),
+            'created_by'  => session()->get('userId')
         ];
 
         if ($this->projectModel->insert($data)) {

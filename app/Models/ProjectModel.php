@@ -9,8 +9,9 @@ class ProjectModel extends Model
     protected $table      = 'projects';
     protected $primaryKey = 'id';
 
+
     // Ensure 'created_at' is allowed, even if not explicitly sent from controller
-    protected $allowedFields = ['title', 'description', 'created_at'];
+    protected $allowedFields = ['title', 'description', 'created_at','created_by','updated_by','deleted_by'];
 
     // MODIFIED: Disable CodeIgniter's automatic timestamp handling for this model
     protected $useTimestamps = false;
