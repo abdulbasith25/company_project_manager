@@ -62,7 +62,7 @@
     <!-- Brand Logo -->
     <a href="<?= base_url('admin/dashboard') ?>" class="brand-link">
       <img src="https://placehold.co/128x128/007bff/fff?text=AD" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Admin Panel</span>
+      <span class="brand-text font-weight-light">CREATE USER</span>
     </a>
 
     <!-- Sidebar -->

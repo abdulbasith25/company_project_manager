@@ -36,7 +36,7 @@ $routes->group('admin', ['filter' => ['auth', 'admin']], static function ($route
 });
 
 // Project Management Routes (Admin Only)
-$routes->group('projects', ['filter' => ['auth', 'admin']], static function ($routes) {
+$routes->group('projects', ['filter' => ['auth']], static function ($routes) {
     $routes->get('/', 'ProjectController::index');
     $routes->get('create', 'ProjectController::create');
     $routes->post('store', 'ProjectController::store');

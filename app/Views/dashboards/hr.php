@@ -93,6 +93,12 @@
               <p>Manage Users</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="<?= base_url('projects') ?>" class="nav-link">
+              <i class="nav-icon fas fa-project-diagram"></i>
+              <p>Manage Projects</p>
+            </a>
+          </li>
           <!-- Removed: Manage Projects and Manage Tasks sidebar links -->
           <li class="nav-item">
             <a href="<?= base_url('logout') ?>" class="nav-link">
