@@ -27,10 +27,7 @@
     .card-footer {
         background-color: transparent;
     }
-    /* Custom spacer class for clear visual separation */
-    .section-spacing {
-        margin-top: 30px; /* Adjust this value for more or less space */
-    }
+    /* Removed: Custom spacer class and scroll-behavior as per request */
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -85,12 +82,56 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Main Dashboard Link (active when no specific task filter is applied) -->
           <li class="nav-item">
             <a href="<?= base_url('dashboard/employee') ?>" class="nav-link active">
-              <i class="nav-icon fas fa-tasks"></i>
-              <p>Your Assigned Tasks</p>
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
             </a>
           </li>
+          <!-- Task Management Section (Now points to /tasks page) -->
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>
+                Your Tasks
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Your Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=Pending" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pending Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=In%20Progress" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>In Progress Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=Completed" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Completed Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=Blocked" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Blocked Tasks</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Logout Link -->
           <li class="nav-item">
             <a href="<?= base_url('logout') ?>" class="nav-link">
               <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -116,7 +157,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?= base_url('dashboard/employee') ?>">Home</a></li>
-              <li class="breadcrumb-item active">Assigned Tasks</li>
+              <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -172,7 +213,7 @@
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="<?= base_url('dashboard/employee') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('tasks') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- Pending Assigned Tasks -->
@@ -185,7 +226,7 @@
               <div class="icon">
                 <i class="ion ion-clock"></i>
               </div>
-              <a href="<?= base_url('dashboard/employee') ?>?status=Pending" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('tasks') ?>?status=Pending" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- In Progress Assigned Tasks -->
@@ -198,7 +239,7 @@
               <div class="icon">
                 <i class="ion ion-refresh"></i>
               </div>
-              <a href="<?= base_url('dashboard/employee') ?>?status=In Progress" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('tasks') ?>?status=In%20Progress" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- Completed Assigned Tasks -->
@@ -211,7 +252,7 @@
               <div class="icon">
                 <i class="ion ion-checkmark-round"></i>
               </div>
-              <a href="<?= base_url('dashboard/employee') ?>?status=Completed" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('tasks') ?>?status=Completed" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- Blocked Assigned Tasks -->
@@ -224,68 +265,14 @@
               <div class="icon">
                 <i class="ion ion-alert"></i>
               </div>
-              <a href="<?= base_url('dashboard/employee') ?>?status=Blocked" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('tasks') ?>?status=Blocked" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
         <!-- /.row -->
 
-        <div class="section-spacing"></div> <!-- Spacer -->
-
-        <!-- Assigned Tasks Section -->
-        <div class="card card-info card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Your Assigned Tasks</h3>
-            </div>
-            <div class="card-body p-0">
-                <?php if (empty($assignedTasks)): ?>
-                    <div class="alert alert-info m-3" role="alert">
-                        No tasks currently assigned to you.
-                    </div>
-                <?php else: ?>
-                    <table class="table table-striped table-valign-middle">
-                        <thead>
-                            <tr>
-                                <th>Task Title</th>
-                                <th>Project</th>
-                                <th>Description</th>
-                                <th>Priority</th>
-                                <th>Current Status</th>
-                                <th style="width: 200px;">Update Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($assignedTasks as $task): ?>
-                                <tr>
-                                    <td><?= esc($task['title']) ?></td>
-                                    <td><?= esc($task['project_title']) ?></td>
-                                    <td><?= esc($task['description'] ?? '') ?></td>
-                                    <td><span class="badge badge-<?= ($task['priority'] == 'High') ? 'danger' : (($task['priority'] == 'Medium') ? 'warning' : 'success') ?>"><?= esc($task['priority']) ?></span></td>
-                                    <td><span class="badge badge-<?= ($task['status'] == 'Completed') ? 'success' : (($task['status'] == 'In Progress') ? 'info' : 'secondary') ?>"><?= esc($task['status']) ?></span></td>
-                                    <td>
-                                        <form action="<?= base_url('dashboard/employee/tasks/update_status') ?>" method="post" class="d-flex">
-                                            <?= csrf_field() ?>
-                                            <input type="hidden" name="task_id" value="<?= esc($task['id']) ?>">
-                                            <select name="status" class="form-control form-control-sm mr-2" onchange="this.form.submit()">
-                                                <option value="">Select Status</option>
-                                                <option value="Pending" <?= ($task['status'] == 'Pending') ? 'selected' : '' ?>>Pending</option>
-                                                <option value="In Progress" <?= ($task['status'] == 'In Progress') ? 'selected' : '' ?>>In Progress</option>
-                                                <option value="Completed" <?= ($task['status'] == 'Completed') ? 'selected' : '' ?>>Completed</option>
-                                                <option value="Blocked" <?= ($task['status'] == 'Blocked') ? 'selected' : '' ?>>Blocked</option>
-                                            </select>
-                                            <!-- Optional: Add a submit button if you don't want auto-submit on change -->
-                                            <!-- <button type="submit" class="btn btn-sm btn-primary">Update</button> -->
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php endif; ?>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
+        <!-- REMOVED: Assigned Tasks Section (the table) -->
+        <!-- The old div.card for Your Assigned Tasks was here. It has been removed. -->
 
       </div><!-- /.container-fluid -->
     </section>

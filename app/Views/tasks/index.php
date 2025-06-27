@@ -25,10 +25,6 @@
         max-height: 33px;
         width: auto;
     }
-    /* Custom spacer class for clear visual separation */
-    .section-spacing {
-        margin-top: 30px; /* Adjust this value for more or less space */
-    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -42,7 +38,16 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="<?= base_url('admin/dashboard') ?>" class="nav-link">Home</a>
+        <!-- Home link depends on role -->
+        <?php if ($currentUserRole == 1): // Admin ?>
+            <a href="<?= base_url('admin/dashboard') ?>" class="nav-link">Home</a>
+        <?php elseif ($currentUserRole == 2): // Employee ?>
+            <a href="<?= base_url('dashboard/employee') ?>" class="nav-link">Home</a>
+        <?php elseif ($currentUserRole == 3): // HR ?>
+            <a href="<?= base_url('hr/dashboard') ?>" class="nav-link">Home</a>
+        <?php else: ?>
+            <a href="<?= base_url('/') ?>" class="nav-link">Home</a>
+        <?php endif; ?>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="<?= base_url('tasks') ?>" class="nav-link">Tasks</a>
@@ -66,10 +71,28 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?= base_url('admin/dashboard') ?>" class="brand-link">
-      <img src="https://placehold.co/128x128/007bff/fff?text=AD" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Admin Panel</span>
-    </a>
+    <?php if ($currentUserRole == 1): // Admin ?>
+        <a href="<?= base_url('admin/dashboard') ?>" class="brand-link">
+          <img src="https://placehold.co/128x128/007bff/fff?text=AD" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+          <span class="brand-text font-weight-light">Admin Panel</span>
+        </a>
+    <?php elseif ($currentUserRole == 2): // Employee ?>
+        <a href="<?= base_url('dashboard/employee') ?>" class="brand-link">
+          <img src="https://placehold.co/128x128/28a745/fff?text=EMP" alt="Employee Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+          <span class="brand-text font-weight-light">Employee Panel</span>
+        </a>
+    <?php elseif ($currentUserRole == 3): // HR ?>
+        <a href="<?= base_url('hr/dashboard') ?>" class="brand-link">
+          <img src="https://placehold.co/128x128/dc3545/fff?text=HR" alt="HR Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+          <span class="brand-text font-weight-light">HR Panel</span>
+        </a>
+    <?php else: ?>
+        <a href="<?= base_url('/') ?>" class="brand-link">
+          <img src="https://placehold.co/128x128/6c757d/fff?text=APP" alt="App Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+          <span class="brand-text font-weight-light">App</span>
+        </a>
+    <?php endif; ?>
+
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -86,45 +109,119 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Dashboard Link (role-dependent) -->
           <li class="nav-item">
-            <a href="<?= base_url('admin/dashboard') ?>" class="nav-link">
+            <?php if ($currentUserRole == 1): ?>
+                <a href="<?= base_url('admin/dashboard') ?>" class="nav-link">
+            <?php elseif ($currentUserRole == 2): ?>
+                <a href="<?= base_url('employee/dashboard') ?>" class="nav-link">
+            <?php elseif ($currentUserRole == 3): ?>
+                <a href="<?= base_url('hr/dashboard') ?>" class="nav-link">
+            <?php else: ?>
+                <a href="<?= base_url('dashboard/employee') ?>" class="nav-link">
+            <?php endif; ?>
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>Dashboard</p>
             </a>
           </li>
-          <!-- Projects Links -->
-          <li class="nav-item">
-            <a href="<?= base_url('projects') ?>" class="nav-link">
-              <i class="nav-icon fas fa-list"></i>
-              <p>All Projects</p>
+
+          <!-- Projects Links (Admin/HR Only) -->
+          <?php if (in_array($currentUserRole, [1, 3])): ?>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-project-diagram"></i>
+              <p>
+                Project Management
+                <i class="right fas fa-angle-left"></i>
+              </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?= base_url('projects') ?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Projects</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('projects/create') ?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Create Project</p>
+                </a>
+              </li>
+            </ul>
           </li>
-          <li class="nav-item">
-            <a href="<?= base_url('projects/create') ?>" class="nav-link">
-              <i class="nav-icon fas fa-plus-circle"></i>
-              <p>Create Project</p>
-            </a>
-          </li>
-          <!-- User Management Links -->
-          <li class="nav-item">
-            <a href="<?= base_url('users') ?>" class="nav-link">
+          <?php endif; ?>
+
+          <!-- User Management Links (Admin/HR Only) -->
+          <?php if (in_array($currentUserRole, [1, 3])): ?>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
-              <p>Manage Users</p>
+              <p>
+                User Management
+                <i class="right fas fa-angle-left"></i>
+              </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?= base_url('users') ?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Users</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('users/create') ?>" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New User</p>
+                </a>
+              </li>
+            </ul>
           </li>
-          <li class="nav-item">
-            <a href="<?= base_url('users/create') ?>" class="nav-link">
-              <i class="nav-icon fas fa-user-plus"></i>
-              <p>Add New User</p>
-            </a>
-          </li>
-          <!-- Tasks Links -->
-          <li class="nav-item">
-            <a href="<?= base_url('tasks') ?>" class="nav-link active">
+          <?php endif; ?>
+
+          <!-- Task Management Links (For All Roles) -->
+          <li class="nav-item has-treeview menu-open"> <!-- 'menu-open' to keep it expanded by default -->
+            <a href="#" class="nav-link active"> <!-- Active for this parent menu -->
               <i class="nav-icon fas fa-tasks"></i>
-              <p>All Tasks</p>
+              <p>
+                Task Management
+                <i class="right fas fa-angle-left"></i>
+              </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>" class="nav-link <?= empty($currentStatusFilter) ? 'active' : '' ?>">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=Pending" class="nav-link <?= ($currentStatusFilter == 'Pending') ? 'active' : '' ?>">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pending Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=In%20Progress" class="nav-link <?= ($currentStatusFilter == 'In Progress') ? 'active' : '' ?>">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>In Progress Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=Completed" class="nav-link <?= ($currentStatusFilter == 'Completed') ? 'active' : '' ?>">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Completed Tasks</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?= base_url('tasks') ?>?status=Blocked" class="nav-link <?= ($currentStatusFilter == 'Blocked') ? 'active' : '' ?>">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Blocked Tasks</p>
+                </a>
+              </li>
+            </ul>
           </li>
+          <!-- Logout Link -->
           <li class="nav-item">
             <a href="<?= base_url('logout') ?>" class="nav-link">
               <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -149,7 +246,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>">Home</a></li>
+              <li class="breadcrumb-item"><a href="<?= base_url('dashboard/employee') ?>">Home</a></li>
               <li class="breadcrumb-item active">Tasks</li>
             </ol>
           </div><!-- /.col -->
@@ -194,96 +291,29 @@
             </div>
         <?php endif; ?>
 
-        <!-- Small Boxes / Info Boxes for Task Summary -->
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- Total Tasks -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3><?= esc($totalTasks) ?></h3>
-                <p>Total Tasks</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- Pending Tasks -->
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-secondary">
-              <div class="inner">
-                <h3><?= esc($pendingTasks) ?></h3>
-                <p>Pending Tasks</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-clock"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- In Progress Tasks -->
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-primary">
-              <div class="inner">
-                <h3><?= esc($inProgressTasks) ?></h3>
-                <p>In Progress Tasks</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-refresh"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- Completed Tasks -->
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3><?= esc($completedTasks) ?></h3>
-                <p>Completed Tasks</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-checkmark-round"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- Blocked Tasks -->
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3><?= esc($blockedTasks) ?></h3>
-                <p>Blocked Tasks</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-alert"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-        </div>
-        <!-- /.row -->
-
-        <!-- ADDED SPACER DIV -->
-        <div class="section-spacing"></div>
+        <!-- REMOVED: Small Boxes / Info Boxes for Task Summary -->
+        <!-- The summary boxes are now on the dashboard pages. -->
 
         <!-- All Tasks Table -->
         <div class="card card-dark card-outline">
             <div class="card-header">
                 <h3 class="card-title">Task List</h3>
                 <div class="card-tools">
+                    <!-- Add Task button only for Admin/HR -->
+                    <?php if (in_array($currentUserRole, [1, 3])): ?>
                     <button class="btn btn-primary btn-sm"
                             data-toggle="modal"
                             data-target="#addTaskModal"
                             title="Add New Task">
                         <i class="fas fa-plus"></i> Add New Task
                     </button>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="card-body table-responsive p-0">
                 <?php if (empty($tasks)): ?>
                     <div class="alert alert-info m-3" role="alert">
-                        No tasks found in the system.
+                        No tasks found in the system matching the selected filter.
                     </div>
                 <?php else: ?>
                     <table id="tasksTable" class="table table-hover text-nowrap">
@@ -360,31 +390,35 @@
                                                 data-deleted-by="<?= esc($task['deleted_by_name'] ?? 'N/A') ?>">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <!-- Edit Task Button -->
-                                        <button class="btn btn-sm btn-primary mr-1 edit-task-btn"
-                                                title="Edit Task"
-                                                data-toggle="modal"
-                                                data-target="#editTaskModal"
-                                                data-id="<?= esc($task['id']) ?>"
-                                                data-title="<?= esc($task['title']) ?>"
-                                                data-description="<?= esc($task['description']) ?>"
-                                                data-remarks="<?= esc($task['remarks'] ?? '') ?>"
-                                                data-file="<?= esc($task['file'] ?? '') ?>"
-                                                data-priority="<?= esc($task['priority']) ?>"
-                                                data-status="<?= esc($task['status']) ?>"
-                                                data-project-id="<?= esc($task['project_id']) ?>"
-                                                data-assigned-to-id="<?= esc($task['assigned_to']) ?>">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <!-- Delete Task Button (Hard Delete) -->
-                                        <button class="btn btn-sm btn-danger delete-task-btn"
-                                                title="Delete Task"
-                                                data-toggle="modal"
-                                                data-target="#deleteTaskConfirmModal"
-                                                data-id="<?= esc($task['id']) ?>"
-                                                data-title="<?= esc($task['title']) ?>">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
+                                        <!-- Edit/Delete Task Buttons (Admin/HR Only) -->
+                                        <?php if (in_array($currentUserRole, [1, 3])): ?>
+                                            <button class="btn btn-sm btn-primary mr-1 edit-task-btn"
+                                                    title="Edit Task"
+                                                    data-toggle="modal"
+                                                    data-target="#editTaskModal"
+                                                    data-id="<?= esc($task['id']) ?>"
+                                                    data-title="<?= esc($task['title']) ?>"
+                                                    data-description="<?= esc($task['description']) ?>"
+                                                    data-remarks="<?= esc($task['remarks'] ?? '') ?>"
+                                                    data-file="<?= esc($task['file'] ?? '') ?>"
+                                                    data-priority="<?= esc($task['priority']) ?>"
+                                                    data-status="<?= esc($task['status']) ?>"
+                                                    data-project-id="<?= esc($task['project_id']) ?>"
+                                                    data-assigned-to-id="<?= esc($task['assigned_to']) ?>">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete-task-btn"
+                                                    title="Delete Task"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteTaskConfirmModal"
+                                                    data-id="<?= esc($task['id']) ?>"
+                                                    data-title="<?= esc($task['title']) ?>">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        <?php else: ?>
+                                            <!-- Employee can only update status, no full edit/delete -->
+                                            <!-- The status update is done via the table itself, not a separate button here -->
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -402,7 +436,7 @@
 
   <!-- Main Footer -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2024-<?= date('Y') ?> <a href="#">Your Company</a>.</strong>
+    <strong>Copyright &copy; 2024-<?= date('Y') ?> <a href="#">Trogon media pvt ltd</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 3.1.0

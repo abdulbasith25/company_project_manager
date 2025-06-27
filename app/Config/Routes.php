@@ -22,7 +22,8 @@ $routes->post('register', 'Auth::register');
 $routes->group('dashboard', ['filter' => 'auth'], static function ($routes) {
     $routes->get('admin', 'Auth::dashboard'); // This route will now redirect to /admin/dashboard
     $routes->get('employee', 'EmployeeController::index');
-    $routes->post('employee/tasks/update_status', 'EmployeeController::updateTaskStatus');
+    // REMOVED: EmployeeController::updateTaskStatus route, as it's now centralized in TaskController
+    // $routes->post('employee/tasks/update_status', 'EmployeeController::updateTaskStatus');
     $routes->get('hr', 'HrController::index');
     $routes->get('general', 'Auth::dashboard');
 });
@@ -30,9 +31,8 @@ $routes->group('dashboard', ['filter' => 'auth'], static function ($routes) {
 // Admin specific routes, protected by 'auth' AND 'admin' filters
 $routes->group('admin', ['filter' => ['auth', 'admin']], static function ($routes) {
     $routes->get('dashboard', 'AdminController::index');
-    // $routes->post('projects/store', 'AdminController::storeProject'); // Moved to ProjectController
-    $routes->post('tasks/store', 'AdminController::storeTask'); // Remains here for now
-    // $routes->post('users/store', 'AdminController::storeUser'); // Moved to UserController
+    // REMOVED: AdminController::storeTask route, as it's now centralized in TaskController
+    // $routes->post('tasks/store', 'AdminController::storeTask');
 });
 
 // Project Management Routes (Admin Only)
@@ -40,28 +40,44 @@ $routes->group('projects', ['filter' => ['auth', 'admin']], static function ($ro
     $routes->get('/', 'ProjectController::index');
     $routes->get('create', 'ProjectController::create');
     $routes->post('store', 'ProjectController::store');
+    // ADDED from previous ProjectController update if not already there:
+    $routes->post('update', 'ProjectController::update');
+    $routes->post('delete', 'ProjectController::delete');
+    $routes->post('restore', 'ProjectController::restore');
 });
 
-// User Management Routes (Admin Only) - NOW INCLUDING UPDATE AND DELETE
+// User Management Routes (Admin Only)
 $routes->group('users', ['filter' => ['auth', 'admin']], static function ($routes) {
     $routes->get('/', 'UserController::index');
     $routes->get('create', 'UserController::create');
     $routes->post('store', 'UserController::store');
-    $routes->post('update', 'UserController::update'); // ADDED: Route for updating users
-    $routes->post('delete', 'UserController::delete'); // ADDED: Route for deleting/deactivating users
+    $routes->post('update', 'UserController::update');
+    $routes->post('delete', 'UserController::delete');
+    // ADDED from previous UserController update if not already there:
+    $routes->post('restore', 'UserController::restore');
 });
 
 
 // HR specific routes, protected by 'auth' AND 'hr' filters
-// NOTE: These HR user management routes should eventually be removed/redirected to UserController
 $routes->group('hr', ['filter' => ['auth', 'hr']], static function ($routes) {
     $routes->get('dashboard', 'HrController::index');
-    $routes->post('users/store', 'HrController::storeUser'); // These will be removed later
-    $routes->post('users/update', 'HrController::updateUser'); // These will be removed later
-    $routes->post('users/delete', 'HrController::deleteUser'); // These will be removed later
-    $routes->post('tasks/store', 'HrController::storeTask');
+    // NOTE: These HR user management routes should eventually be removed/redirected to UserController
+    // $routes->post('users/store', 'HrController::storeUser');
+    // $routes->post('users/update', 'HrController::updateUser');
+    // $routes->post('users/delete', 'HrController::deleteUser');
+
+    // REMOVED: HrController::storeTask, as it's now centralized in TaskController
+    // $routes->post('tasks/store', 'HrController::storeTask');
+});
+
+// NEW: Centralized Task Management Routes (Accessible by Admin, Employee, and HR)
+$routes->group('tasks', ['filter' => 'auth:1,2,3'], static function ($routes) {
+    $routes->get('/', 'TaskController::index'); // Main tasks list page with filters
+    $routes->post('store', 'TaskController::store'); // For adding new tasks (Admin/HR only, controlled in controller)
+    $routes->post('update', 'TaskController::update'); // For updating tasks (Admin/HR only)
+    $routes->post('delete', 'TaskController::delete'); // For deleting tasks (Admin/HR only)
+    $routes->post('update-status', 'TaskController::updateTaskStatus'); // For status updates (All roles, controlled in controller)
 });
 
 // Example of other public routes
 // $routes->get('/', 'Home::index');
-
