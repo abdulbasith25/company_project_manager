@@ -14,7 +14,7 @@ class UserModel extends Model
 
     // Specify the fields that are allowed to be inserted or updated
     // IMPORTANT: Add 'created_at', 'updated_at', and 'deleted_at' to allowedFields
-    protected $allowedFields = ['name', 'phone', 'email', 'password', 'role_id', 'status', 'created_at', 'updated_at', 'deleted_at'];
+    protected $allowedFields = ['name', 'phone', 'email', 'password', 'role_id', 'status', 'created_at', 'updated_at', 'deleted_at','created_by','deleted_by','updated_by'];
 
     // Enable timestamps (if not already enabled for created_at/updated_at)
     protected $useTimestamps = true;

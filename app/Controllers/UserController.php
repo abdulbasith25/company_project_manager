@@ -98,6 +98,10 @@ class UserController extends Controller
             'password'  => $this->request->getPost('password'), // Direct assignment for plain text password
             'role_id'   => $this->request->getPost('role_id'),
             'status'    => $this->request->getPost('status'),
+            'created_by'  => session()->get('userId'),
+            
+            
+            
             'deleted_at' => null, // Explicitly ensure new users are not marked as deleted
         ];
 
@@ -155,6 +159,7 @@ class UserController extends Controller
             'phone'     => $this->request->getPost('phone'),
             'role_id'   => $this->request->getPost('role_id'),
             'status'    => $this->request->getPost('status'),
+            'updated_by'  => session()->get('userId'),
             'updated_at' => date('Y-m-d H:i:s'), // Manually set updated_at if not handled by Model's timestamps
         ];
 
@@ -193,13 +198,14 @@ class UserController extends Controller
         $session = session();
         $userId = $this->request->getPost('user_id');
 
+        $this->userModel->update($userId, ['deleted_by' => session()->get('userId')]);
         // Fetch user including soft-deleted ones to ensure we can operate on them.
         $user = $this->userModel->withDeleted(true)->find($userId);
         if (!$user) {
             $session->setFlashdata('error', 'User not found for deactivation/deletion.');
             return redirect()->to('/users');
         }
-
+        
         // Explicitly set status to 0 (inactive) before soft deleting.
         // This update needs to target the record regardless of its soft-delete status.
         $this->userModel->withDeleted(true)->update($userId, ['status' => 0]);
