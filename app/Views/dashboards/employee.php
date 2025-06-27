@@ -82,54 +82,20 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Main Dashboard Link (active when no specific task filter is applied) -->
+          <!-- Main Dashboard Link (active when on employee dashboard) -->
           <li class="nav-item">
             <a href="<?= base_url('dashboard/employee') ?>" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>Dashboard</p>
             </a>
           </li>
-          <!-- Task Management Section (Now points to /tasks page) -->
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
+          <!-- MODIFIED: Task Management Section - Now a direct link -->
+          <li class="nav-item">
+            <a href="<?= base_url('tasks') ?>" class="nav-link"> <!-- Direct link to /tasks -->
               <i class="nav-icon fas fa-tasks"></i>
-              <p>
-                Your Tasks
-                <i class="right fas fa-angle-left"></i>
-              </p>
+              <p>Your Tasks</p> <!-- No angle-left icon needed as it doesn't expand -->
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?= base_url('tasks') ?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>All Your Tasks</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?= base_url('tasks') ?>?status=Pending" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pending Tasks</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?= base_url('tasks') ?>?status=In%20Progress" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>In Progress Tasks</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?= base_url('tasks') ?>?status=Completed" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Completed Tasks</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?= base_url('tasks') ?>?status=Blocked" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Blocked Tasks</p>
-                </a>
-              </li>
-            </ul>
+            <!-- REMOVED: ul.nav.nav-treeview for sub-items -->
           </li>
           <!-- Logout Link -->
           <li class="nav-item">
