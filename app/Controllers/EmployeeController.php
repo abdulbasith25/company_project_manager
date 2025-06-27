@@ -15,22 +15,35 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Displays the Employee Dashboard with assigned tasks.
+     * Displays the Employee Dashboard with assigned tasks and task summaries.
      *
      * @return string The rendered employee dashboard view.
      */
     public function index(): string
     {
         $session = session();
-        $employeeId = $session->get('userId'); // Get the ID of the logged-in employee
+        $employeeId = $session->get('userId'); // Using 'userId' as per your provided code
 
         // Fetch tasks assigned to this employee, including project titles
         $assignedTasks = $this->taskModel->getAssignedTasksForEmployee($employeeId);
 
+        // NEW: Fetch task counts for the current employee's assigned tasks
+        $totalAssignedTasks      = $this->taskModel->countAllTasks($employeeId);
+        $pendingAssignedTasks    = $this->taskModel->countTasksByStatus('Pending', $employeeId);
+        $inProgressAssignedTasks = $this->taskModel->countTasksByStatus('In Progress', $employeeId);
+        $completedAssignedTasks  = $this->taskModel->countTasksByStatus('Completed', $employeeId);
+        $blockedAssignedTasks    = $this->taskModel->countTasksByStatus('Blocked', $employeeId);
+
         $data = [
-            'userName' => $session->get('userName'),
-            'assignedTasks' => $assignedTasks,
-            'validation' => service('validation') // For displaying validation errors
+            'userName'                => $session->get('userName'),
+            'assignedTasks'           => $assignedTasks,
+            // NEW: Pass the task summary counts to the view
+            'totalAssignedTasks'      => $totalAssignedTasks,
+            'pendingAssignedTasks'    => $pendingAssignedTasks,
+            'inProgressAssignedTasks' => $inProgressAssignedTasks,
+            'completedAssignedTasks'  => $completedAssignedTasks,
+            'blockedAssignedTasks'    => $blockedAssignedTasks,
+            'validation'              => service('validation')
         ];
 
         return view('dashboards/employee', $data);
@@ -57,12 +70,10 @@ class EmployeeController extends Controller
         if (! $this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $validation->getErrors());
         }
-
         $taskId = $this->request->getPost('task_id');
         $newStatus = $this->request->getPost('status');
-        $employeeId = $session->get('userId'); // Ensure only tasks assigned to this user can be updated
+        $employeeId = $session->get('userId'); // Using 'userId' as per your provided code
 
-        // Fetch the task to verify ownership before updating
         $task = $this->taskModel->find($taskId);
 
         if (!$task || $task['assigned_to'] != $employeeId) {
@@ -84,6 +95,6 @@ class EmployeeController extends Controller
             $session->setFlashdata('error', 'Failed to update task status. Please try again.');
         }
 
-        return redirect()->to('/dashboard/employee'); // Redirect back to employee dashboard
+        return redirect()->to('/dashboard/employee');
     }
 }

@@ -26,10 +26,7 @@ class UserController extends Controller
      */
     public function index(): string
     {
-        // Fetch ALL users including soft-deleted ones (if useSoftDeletes is true in model,
-        // then onlyDeleted(false) or withDeleted() is needed to see all).
-        // For the current UserModel, we explicitly select 'deleted_at'
-        // to ensure it's available for the view's conditional logic.
+        
         $allUsers = $this->userModel
                          ->select('users.id, users.name, users.email, users.phone, users.status, users.created_at, users.updated_at, users.deleted_at, users.role_id, roles.title as role_title')
                          ->join('roles', 'roles.id = users.role_id', 'left')
@@ -41,7 +38,7 @@ class UserController extends Controller
         $roles = $this->roleModel->findAll();
 
         $data = [
-            'userName' => session()->get('userName'), // Pass for sidebar/navbar
+            'userName' => session()->get('userName'), 
             'allUsers' => $allUsers,
             'roles' => $roles, // Pass roles for edit/view modals/pages if needed in this view
         ];
@@ -134,7 +131,7 @@ class UserController extends Controller
         $originalUserData = $this->userModel->withDeleted(true)->find($userId);
         if (!$originalUserData) {
             $session->setFlashdata('error', 'User not found for update.');
-            return redirect()->to('/users'); // Redirect to users list if user not found
+            return redirect()->to('/users'); 
         }
 
         $rules = [
@@ -159,8 +156,8 @@ class UserController extends Controller
             'phone'     => $this->request->getPost('phone'),
             'role_id'   => $this->request->getPost('role_id'),
             'status'    => $this->request->getPost('status'),
-            'updated_by'  => session()->get('userId'),
-            'updated_at' => date('Y-m-d H:i:s'), // Manually set updated_at if not handled by Model's timestamps
+            'updated_by'=> $this->request->getPost('id'),
+            'updated_at' => date('Y-m-d H:i:s') // Manually set updated_at if not handled by Model's timestamps
         ];
 
         // Handle password update only if a new password is provided

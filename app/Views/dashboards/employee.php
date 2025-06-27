@@ -27,6 +27,10 @@
     .card-footer {
         background-color: transparent;
     }
+    /* Custom spacer class for clear visual separation */
+    .section-spacing {
+        margin-top: 30px; /* Adjust this value for more or less space */
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -84,7 +88,7 @@
           <li class="nav-item">
             <a href="<?= base_url('dashboard/employee') ?>" class="nav-link active">
               <i class="nav-icon fas fa-tasks"></i>
-              <p>Assigned Tasks</p>
+              <p>Your Assigned Tasks</p>
             </a>
           </li>
           <li class="nav-item">
@@ -156,6 +160,78 @@
             </div>
         <?php endif; ?>
 
+        <!-- Small Boxes / Info Boxes for Task Summary (Assigned to Employee) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- Total Assigned Tasks -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?= esc($totalAssignedTasks) ?></h3>
+                <p>Total Assigned Tasks</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="<?= base_url('dashboard/employee') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- Pending Assigned Tasks -->
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-secondary">
+              <div class="inner">
+                <h3><?= esc($pendingAssignedTasks) ?></h3>
+                <p>Pending Tasks</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-clock"></i>
+              </div>
+              <a href="<?= base_url('dashboard/employee') ?>?status=Pending" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- In Progress Assigned Tasks -->
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-primary">
+              <div class="inner">
+                <h3><?= esc($inProgressAssignedTasks) ?></h3>
+                <p>In Progress Tasks</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-refresh"></i>
+              </div>
+              <a href="<?= base_url('dashboard/employee') ?>?status=In Progress" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- Completed Assigned Tasks -->
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3><?= esc($completedAssignedTasks) ?></h3>
+                <p>Completed Tasks</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-checkmark-round"></i>
+              </div>
+              <a href="<?= base_url('dashboard/employee') ?>?status=Completed" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- Blocked Assigned Tasks -->
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3><?= esc($blockedAssignedTasks) ?></h3>
+                <p>Blocked Tasks</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-alert"></i>
+              </div>
+              <a href="<?= base_url('dashboard/employee') ?>?status=Blocked" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <div class="section-spacing"></div> <!-- Spacer -->
+
         <!-- Assigned Tasks Section -->
         <div class="card card-info card-outline">
             <div class="card-header">
@@ -183,7 +259,7 @@
                                 <tr>
                                     <td><?= esc($task['title']) ?></td>
                                     <td><?= esc($task['project_title']) ?></td>
-                                    <td><?= esc($task['description'] ?? '') ?></td> <!-- MODIFIED LINE HERE -->
+                                    <td><?= esc($task['description'] ?? '') ?></td>
                                     <td><span class="badge badge-<?= ($task['priority'] == 'High') ? 'danger' : (($task['priority'] == 'Medium') ? 'warning' : 'success') ?>"><?= esc($task['priority']) ?></span></td>
                                     <td><span class="badge badge-<?= ($task['status'] == 'Completed') ? 'success' : (($task['status'] == 'In Progress') ? 'info' : 'secondary') ?>"><?= esc($task['status']) ?></span></td>
                                     <td>

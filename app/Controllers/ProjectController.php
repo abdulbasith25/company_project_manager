@@ -122,4 +122,5 @@ class ProjectController extends Controller
             return redirect()->back()->withInput(); // Redirect back to form with old input
         }
     }
+    
 }

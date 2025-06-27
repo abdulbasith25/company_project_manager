@@ -18,6 +18,8 @@ class ProjectModel extends Model
     // We can comment out these if useTimestamps is false, or keep them as documentation
     // protected $createdField  = 'created_at';
     // protected $updatedField  = false;
+    protected $useSoftDeletes = true;
+    protected $deletedField  = 'deleted_at';
 
     /**
      * Fetches all projects and optionally joins tasks to get assigned employee names.
