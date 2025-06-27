@@ -47,7 +47,7 @@ $routes->group('projects', ['filter' => ['auth', 'admin']], static function ($ro
 });
 
 // User Management Routes (Admin Only)
-$routes->group('users', ['filter' => ['auth', 'admin']], static function ($routes) {
+$routes->group('users', ['filter' => ['auth', ]], static function ($routes) {
     $routes->get('/', 'UserController::index');
     $routes->get('create', 'UserController::create');
     $routes->post('store', 'UserController::store');
@@ -61,6 +61,7 @@ $routes->group('users', ['filter' => ['auth', 'admin']], static function ($route
 // HR specific routes, protected by 'auth' AND 'hr' filters
 $routes->group('hr', ['filter' => ['auth', 'hr']], static function ($routes) {
     $routes->get('dashboard', 'HrController::index');
+    
     // NOTE: These HR user management routes should eventually be removed/redirected to UserController
     // $routes->post('users/store', 'HrController::storeUser');
     // $routes->post('users/update', 'HrController::updateUser');

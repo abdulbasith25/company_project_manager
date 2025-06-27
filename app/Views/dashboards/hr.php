@@ -27,10 +27,6 @@
     .card-footer {
         background-color: transparent;
     }
-    /* Add smooth scroll behavior */
-    html {
-        scroll-behavior: smooth;
-    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -92,11 +88,12 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#all-users-section" class="nav-link"> <!-- MODIFIED HREF HERE -->
+            <a href="<?= base_url('users') ?>" class="nav-link"> <!-- Direct link to /users page -->
               <i class="nav-icon fas fa-users"></i>
               <p>Manage Users</p>
             </a>
           </li>
+          <!-- Removed: Manage Projects and Manage Tasks sidebar links -->
           <li class="nav-item">
             <a href="<?= base_url('logout') ?>" class="nav-link">
               <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -166,7 +163,7 @@
             </div>
         <?php endif; ?>
 
-        <!-- Small Boxes / Info Boxes for User Summary -->
+        <!-- Small Boxes / Info Boxes for User Summary ONLY -->
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- Total Users -->
@@ -178,7 +175,7 @@
               <div class="icon">
                 <i class="ion ion-person-stalker"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('users') ?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- Total Active Users -->
@@ -191,7 +188,7 @@
               <div class="icon">
                 <i class="ion ion-checkmark-circled"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('users') ?>?status=1" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- Total Inactive Users -->
@@ -204,7 +201,7 @@
               <div class="icon">
                 <i class="ion ion-alert-circled"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('users') ?>?status=0" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- Total Employees -->
@@ -217,7 +214,7 @@
               <div class="icon">
                 <i class="ion ion-briefcase"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('users') ?>?role_id=2" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- Total Admins -->
@@ -230,11 +227,11 @@
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('users') ?>?role_id=1" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-           <!-- Total HRs -->
-           <div class="col-lg-3 col-6">
+            <!-- Total HRs -->
+            <div class="col-lg-3 col-6">
             <div class="small-box bg-secondary">
               <div class="inner">
                 <h3><?= esc($totalHRs) ?></h3>
@@ -243,103 +240,25 @@
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer"><i class="fas fa-arrow-circle-right"></i></a>
+              <a href="<?= base_url('users') ?>?role_id=3" class="small-box-footer"><i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
-        <!-- /.row -->
+        <!-- /.row (User Summaries) -->
 
-        <!-- All Users Section -->
-        <div id="all-users-section" class="card card-dark card-outline "> <!-- ADDED ID HERE -->
-            <div class="card-header">
-                <h3 class="card-title">All Users</h3>
-            </div>
-            <div class="card-body table-responsive p-0">
-                <?php if (empty($allUsers)): ?>
-                    <div class="alert alert-info m-3" role="alert">
-                        No users found in the system.
-                    </div>
-                <?php else: ?>
-                    <table class="table table-hover text-nowrap">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Created At</th>
-                                <th style="width: 150px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($allUsers as $user): ?>
-                                <tr>
-                                    <td><?= esc($user['id']) ?></td>
-                                    <td><?= esc($user['name']) ?></td>
-                                    <td><?= esc($user['email']) ?></td>
-                                    <td><?= esc($user['phone'] ?? 'N/A') ?></td>
-                                    <td><span class="badge badge-<?= ($user['role_id'] == 1) ? 'danger' : (($user['role_id'] == 2) ? 'primary' : 'secondary') ?>"><?= esc($user['role_title']) ?></span></td>
-                                    <td>
-                                        <span class="badge badge-<?= ($user['status'] == 1) ? 'success' : 'dark' ?>">
-                                            <?= ($user['status'] == 1) ? 'Active' : 'Inactive' ?>
-                                        </span>
-                                    </td>
-                                    <td><?= date('M d, Y', strtotime($user['created_at'])) ?></td>
-                                    <td>
-                                        <!-- View Details Button -->
-                                        <button class="btn btn-sm btn-info mr-1 view-user-btn"
-                                                title="View Details"
-                                                data-toggle="modal"
-                                                data-target="#viewUserModal"
-                                                data-id="<?= esc($user['id']) ?>"
-                                                data-name="<?= esc($user['name']) ?>"
-                                                data-email="<?= esc($user['email']) ?>"
-                                                data-phone="<?= esc($user['phone'] ?? 'N/A') ?>"
-                                                data-role="<?= esc($user['role_title']) ?>"
-                                                data-status="<?= ($user['status'] == 1) ? 'Active' : 'Inactive' ?>"
-                                                data-created-at="<?= date('M d, Y H:i', strtotime($user['created_at'])) ?>">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <!-- Edit User Button -->
-                                        <button class="btn btn-sm btn-primary mr-1 edit-user-btn"
-                                                title="Edit User"
-                                                data-toggle="modal"
-                                                data-target="#editUserModal"
-                                                data-id="<?= esc($user['id']) ?>"
-                                                data-name="<?= esc($user['name']) ?>"
-                                                data-email="<?= esc($user['email']) ?>"
-                                                data-phone="<?= esc($user['phone'] ?? '') ?>"
-                                                data-role-id="<?= esc($user['role_id']) ?>"
-                                                data-status="<?= esc($user['status']) ?>">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <!-- Delete User Button -->
-                                        <button class="btn btn-sm btn-danger delete-user-btn"
-                                                title="Delete User"
-                                                data-toggle="modal"
-                                                data-target="#deleteUserConfirmModal"
-                                                data-id="<?= esc($user['id']) ?>"
-                                                data-name="<?= esc($user['name']) ?>">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php endif; ?>
-            </div>
-            <!-- /.card-body -->
-             <div class="card-footer d-flex justify-content-between">
-                <button class="btn btn-primary"
+        <!-- Removed: Project Summary row -->
+        <!-- Removed: Task Summary row -->
+
+        <!-- Action Buttons Section (for modals still on this page) -->
+        <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-center mb-3">
+                <button class="btn btn-primary mx-2"
                         data-toggle="modal"
                         data-target="#assignTaskByHrModal"
                         title="Assign New Task">
                     <i class="fas fa-tasks mr-1"></i> Assign New Task
                 </button>
-                <button class="btn btn-success"
+                <button class="btn btn-success mx-2"
                         data-toggle="modal"
                         data-target="#addUserModal"
                         title="Add New User">
@@ -347,7 +266,6 @@
                 </button>
             </div>
         </div>
-        <!-- /.card -->
 
       </div><!-- /.container-fluid -->
     </section>
@@ -555,7 +473,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-danger">Delete User</button>
-        </div>
+        </d>
       </form>
     </div>
   </div>
