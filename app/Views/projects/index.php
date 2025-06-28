@@ -305,7 +305,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="<?= base_url('admin/tasks/store') ?>" method="post">
+      <form action="<?= base_url('tasks/store') ?>" method="post">
         <?= csrf_field() ?>
         <input type="hidden" name="project_id" id="assignTaskProjectId">
         <div class="modal-body">

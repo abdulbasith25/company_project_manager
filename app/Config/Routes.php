@@ -22,8 +22,6 @@ $routes->post('register', 'Auth::register');
 $routes->group('dashboard', ['filter' => 'auth'], static function ($routes) {
     $routes->get('admin', 'Auth::dashboard'); // This route will now redirect to /admin/dashboard
     $routes->get('employee', 'EmployeeController::index');
-    // REMOVED: EmployeeController::updateTaskStatus route, as it's now centralized in TaskController
-    // $routes->post('employee/tasks/update_status', 'EmployeeController::updateTaskStatus');
     $routes->get('hr', 'HrController::index');
     $routes->get('general', 'Auth::dashboard');
 });
@@ -77,7 +75,8 @@ $routes->group('tasks', ['filter' => 'auth:1,2,3'], static function ($routes) {
     $routes->post('store', 'TaskController::store'); // For adding new tasks (Admin/HR only, controlled in controller)
     $routes->post('update', 'TaskController::update'); // For updating tasks (Admin/HR only)
     $routes->post('delete', 'TaskController::delete'); // For deleting tasks (Admin/HR only)
-    $routes->post('update-status', 'TaskController::updateTaskStatus'); // For status updates (All roles, controlled in controller)
+    $routes->post('update-status', 'TaskController::updateTaskStatus'); 
+    $routes->post('updateStatus', 'TaskController::updateTaskStatus'); // For status updates (All roles, controlled in controller)
 });
 
 // Example of other public routes

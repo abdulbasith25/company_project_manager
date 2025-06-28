@@ -31,7 +31,7 @@ class TaskController extends Controller
     {
         $session = service('session');
         $currentUserId = $session->get('id'); // Get the ID of the logged-in user
-        $currentUserRole = $session->get('role_id'); // Get the role of the logged-in user
+        $currentUserRole = $session->get('userRole'); // Get the role of the logged-in user
 
         // Get the status filter from the URL
         $statusFilter = $this->request->getGet('status');
@@ -103,16 +103,21 @@ class TaskController extends Controller
         $session = service('session');
         $validation = service('validation');
 
+        $currentUserRole = $session->get('userRole');
+
+        // --- CHANGE 1: Initialize $statusFilter at the start of the method ---
+        $statusFilter = $this->request->getGet('status');
+        
         // Check if user has permission (Admin or HR)
-        if (!in_array($session->get('role_id'), [1, 3])) {
+        if (!in_array($session->get('userRole'), [1,3])) {
             $session->setFlashdata('error', 'You do not have permission to create tasks.');
             return redirect()->to('/tasks');
         }
 
         // Validation rules for task creation
         $rules = [
-            'title'       => 'required|min_length[3]|max_length[255]',
-            'description' => 'permit_empty|max_length[5000]',
+            'task_title'       => 'required|min_length[3]|max_length[255]',
+            'task_description' => 'permit_empty|max_length[5000]',
             'remarks'     => 'permit_empty|max_length[5000]',
             'file'        => 'permit_empty|max_length[255]',
             'priority'    => 'required|in_list[Low,Medium,High]',
@@ -126,8 +131,8 @@ class TaskController extends Controller
         }
 
         $data = [
-            'title'       => $this->request->getPost('title'),
-            'description' => $this->request->getPost('description'),
+            'title'       => $this->request->getPost('task_title'),
+            'description' => $this->request->getPost('task_description'),
             'remarks'     => $this->request->getPost('remarks'),
             'file'        => $this->request->getPost('file'),
             'priority'    => $this->request->getPost('priority'),
@@ -163,7 +168,7 @@ class TaskController extends Controller
         $statusFilter = $this->request->getGet('status'); // Get status filter to redirect back correctly
 
         // Check if user has permission (Admin or HR)
-        if (!in_array($session->get('role_id'), [1, 3])) {
+        if (!in_array($session->get('userRole'), [1, 3])) {
             $session->setFlashdata('error', 'You do not have permission to update tasks.');
             return redirect()->to('/tasks');
         }
@@ -227,7 +232,7 @@ class TaskController extends Controller
         $statusFilter = $this->request->getGet('status'); // Get status filter to redirect back correctly
 
         // Check if user has permission (Admin or HR)
-        if (!in_array($session->get('role_id'), [1, 3])) {
+        if (!in_array($session->get('userRole'), [1, 3])) {
             $session->setFlashdata('error', 'You do not have permission to delete tasks.');
             return redirect()->to('/tasks');
         }
@@ -269,7 +274,7 @@ class TaskController extends Controller
         $taskId = $this->request->getPost('task_id');
         $status = $this->request->getPost('status');
         $currentUserId = $session->get('id');
-        $currentUserRole = $session->get('role_id');
+        $currentUserRole = $session->get('userRole');
         $statusFilter = $this->request->getGet('status'); // Get status filter to redirect back correctly
 
 
@@ -292,7 +297,7 @@ class TaskController extends Controller
         }
 
         // Permission check: Admin/HR can update any task, Employee can only update their assigned tasks
-        if (!in_array($currentUserRole, [1, 3]) && $task['assigned_to'] != $currentUserId) {
+        if (!in_array($currentUserRole, [1,2,3]) && $task['assigned_to'] != $currentUserId) {
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Unauthorized: You can only update your own assigned tasks.']);
             }
